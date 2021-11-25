@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:title="Part" android:id="@+id/navi_textSize"
+        android:icon="@drawable/ic_textsize"
+        app:showAsAction="always"/>
+
+    <item android:title="Part" android:id="@+id/navi_color"
+        android:icon="@drawable/ic_color"
+        app:showAsAction="always"/>
+
+    <item android:title="Part" android:id="@+id/navi_part"
+    android:icon="@drawable/ic_part"
+    app:showAsAction="always"/>
+
+
+</menu>

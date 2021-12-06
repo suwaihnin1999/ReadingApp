@@ -2,13 +2,31 @@ package com.swh1999.readingapp.Fragment;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.swh1999.readingapp.BookShelfAdapter;
+import com.swh1999.readingapp.LibraryBookInfo;
 import com.swh1999.readingapp.R;
+import com.swh1999.readingapp.StoryInfo;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,15 +48,6 @@ public class BookShelf_Fragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BookShelf_Fragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static BookShelf_Fragment newInstance(String param1, String param2) {
         BookShelf_Fragment fragment = new BookShelf_Fragment();
         Bundle args = new Bundle();
@@ -62,5 +71,89 @@ public class BookShelf_Fragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_book_shelf_, container, false);
+    }
+
+    RecyclerView mBookShelfRecycler;
+    Toolbar mToolbar;
+    DatabaseReference reffLibrary,reffStory;
+    FirebaseAuth fAuth;
+    String uid;
+    ArrayList<LibraryBookInfo> mLibraryList;
+    ArrayList<StoryInfo> mStoryList;
+    int temp;
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        init();
+        //todo get current user's id
+        fAuth=FirebaseAuth.getInstance();
+        uid=fAuth.getCurrentUser().getUid();
+
+        mToolbar.setTitle("BookShelf");
+
+        mLibraryList=new ArrayList<>();
+        mStoryList=new ArrayList<>();
+
+        mBookShelfRecycler.setLayoutManager(new GridLayoutManager(getContext(),3));
+        reffLibrary=FirebaseDatabase.getInstance().getReference("Library").child(uid);
+        reffLibrary.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mLibraryList.clear();
+                for(DataSnapshot snapshot1:snapshot.getChildren()){
+                    LibraryBookInfo bookInfo=snapshot1.getValue(LibraryBookInfo.class);
+                    mLibraryList.add(bookInfo);
+                }
+                Log.e("gg","Library list="+mLibraryList.size());
+                for(int i=0;i<mLibraryList.size();i++){
+                    temp=0;
+                    String authorId=mLibraryList.get(i).getAuthorId();
+                    String title=mLibraryList.get(i).getTitle();
+                    Log.e("gg","author Id="+authorId+" title="+title);
+                    reffStory=FirebaseDatabase.getInstance().getReference("Story").child(authorId).child(title);
+                    reffStory.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            StoryInfo storyInfo=snapshot.getValue(StoryInfo.class);
+                            Log.e("gg","story info="+storyInfo.getStoryTitleNew());
+                            mStoryList.add(storyInfo);
+                            temp++;
+
+                            if(temp==mLibraryList.size()){
+                                Log.e("gg","story list="+mStoryList.size());
+                                mBookShelfRecycler.setAdapter(new BookShelfAdapter(getContext(),mStoryList));
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+
+
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
+
+        //mBookShelfRecycler.setAdapter(new BookShelfAdapter(getContext(),mLibraryList));
+
+    }
+
+    private void init() {
+        View v=getView().findViewById(R.id.bookShelf_toolbar);
+        mToolbar=v.findViewById(R.id.navi_toolbar);
+        mBookShelfRecycler=getView().findViewById(R.id.bookShelf_recycler);
     }
 }

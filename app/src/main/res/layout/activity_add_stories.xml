@@ -91,7 +91,8 @@
                     android:id="@+id/addStoriesActivity_des"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white" />
+                    android:backgroundTint="@color/white"
+                    tools:ignore="SpeakableTextPresentCheck" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

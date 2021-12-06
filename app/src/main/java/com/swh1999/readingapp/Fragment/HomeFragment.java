@@ -135,7 +135,7 @@ public class HomeFragment extends Fragment {
                         storyViewerInfos.add(snapshot1.getValue(StoryViewerInfo.class));
                     }
                 }
-
+                storyList.clear();
                 Log.e("gg","viewer list"+storyViewerInfos.size());
                 for(int i=0;i<storyViewerInfos.size();i++){
                     temp=0;

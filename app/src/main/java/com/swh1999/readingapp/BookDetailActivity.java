@@ -3,6 +3,7 @@ package com.swh1999.readingapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +25,9 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,28 +46,38 @@ ImageView mBookImg;
 CircleImageView mAuthorImg;
 TextView mTitle,mDes;
 TextView mAuthor,mView,mVote,mPart;
-Button mReadBtn;
-String uid,title;
-DatabaseReference reff,reffUser,reffView,reffPart;
+Button mReadBtn,mAddLibrary;
+String authorId,title,uid;
+DatabaseReference reff,reffUser,reffView,reffPart,reffLibrary;
 ChipGroup mChipGroup;
 String[] tag;
 RecyclerView mSimpleRecycler;
 ArrayList<StoryInfo> mSimpleBookTitle;
 ArrayList<StoryInfo> mSimpleBookList;
-ScrollView mScroll;
+FirebaseAuth fAuth;
+ConstraintLayout parent;
 int temp;
-boolean scrollViewFlag;
 View view1;
-RelativeLayout mMainToolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_detail);
 
-        uid=getIntent().getStringExtra("uid");
+        authorId=getIntent().getStringExtra("uid");
         title=getIntent().getStringExtra("title");
 
         inits();
+
+        //todo get current user's id
+        fAuth=FirebaseAuth.getInstance();
+        uid=fAuth.getCurrentUser().getUid();
+
+        Log.e("gg","author id="+authorId+" uid="+uid+" "+authorId.equals(uid));
+
+        if(authorId.equals(uid)){
+            mAddLibrary.setVisibility(View.GONE);
+        }
+
 
         mToolbar.setTitle("Book Details");
         setSupportActionBar(mToolbar);
@@ -81,7 +95,7 @@ RelativeLayout mMainToolbar;
         mSimpleBookTitle=new ArrayList<>();
         mSimpleBookList=new ArrayList<>();
         //todo to show story title,img,name
-        reff= FirebaseDatabase.getInstance().getReference("Story").child(uid).child(title);
+        reff= FirebaseDatabase.getInstance().getReference("Story").child(authorId).child(title);
         reff.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -107,7 +121,7 @@ RelativeLayout mMainToolbar;
                 mSimpleRecycler.setLayoutManager(new LinearLayoutManager(BookDetailActivity.this));
                 //todo to get simple book list
                 String tagg=tag[0];
-                DatabaseReference reffStory=FirebaseDatabase.getInstance().getReference("Story").child(uid);
+                DatabaseReference reffStory=FirebaseDatabase.getInstance().getReference("Story").child(authorId);
                 reffStory.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -166,7 +180,7 @@ RelativeLayout mMainToolbar;
 
         //todo to show no. of viewer and votes
         reffView=FirebaseDatabase.getInstance().getReference("StoryViewer");
-        reffView.orderByChild("authorId").equalTo(uid).addValueEventListener(new ValueEventListener() {
+        reffView.orderByChild("authorId").equalTo(authorId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot snapshot1:snapshot.getChildren()){
@@ -186,7 +200,7 @@ RelativeLayout mMainToolbar;
         });
 
         //todo show no.of part
-        reffPart=FirebaseDatabase.getInstance().getReference("Part").child(uid).child(title);
+        reffPart=FirebaseDatabase.getInstance().getReference("Part").child(authorId).child(title);
         reffPart.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -200,7 +214,7 @@ RelativeLayout mMainToolbar;
         });
 
         //todo to show author name & profile img
-        reffUser=FirebaseDatabase.getInstance().getReference("Profile").child(uid);
+        reffUser=FirebaseDatabase.getInstance().getReference("Profile").child(authorId);
         reffUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -218,9 +232,22 @@ RelativeLayout mMainToolbar;
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent(BookDetailActivity.this,ReadBookActivity.class);
-                intent.putExtra("authorId",uid);
+                intent.putExtra("authorId",authorId);
                 intent.putExtra("title",title);
                 startActivity(intent);
+            }
+        });
+
+        mAddLibrary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reffLibrary=FirebaseDatabase.getInstance().getReference("Library").child(uid);
+                LibraryBookInfo lb=new LibraryBookInfo(authorId,title);
+                reffLibrary.push().setValue(lb);
+                mReadBtn.setText("Continuous");
+
+                Snackbar.make(parent,"Successfully added to your library", Snackbar.LENGTH_SHORT).show();
+
             }
         });
 
@@ -243,7 +270,9 @@ RelativeLayout mMainToolbar;
         mView=findViewById(R.id.bookDetail_viewer);
         mVote=findViewById(R.id.bookDetail_vote);
         mPart=findViewById(R.id.bookDetail_part);
-        mScroll=findViewById(R.id.scrollView2);
+        mAddLibrary=findViewById(R.id.bookDetail_addLibrary);
+        parent=findViewById(R.id.bookDetail_layout);
+        //mScroll=findViewById(R.id.scrollView2);
 
     }
 }

@@ -77,6 +77,9 @@ int maxid;
                     AlertDialog dialog=mBuilder.create();
                     dialog.show();
                 }
+                else{
+                    finish();
+                }
             }
         });
 
@@ -133,7 +136,7 @@ int maxid;
 
     private void inits() {
         View v=findViewById(R.id.addPart_toolbar);
-        mToolbar=v.findViewById(R.id.transparentToolbar);
+        mToolbar=v.findViewById(R.id.transparentNormalToolbar);
         mPartTitle=findViewById(R.id.addPart_title);
         mPartDes=findViewById(R.id.addPart_des);
         mUpload=findViewById(R.id.addPart_upload);

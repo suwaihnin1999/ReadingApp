@@ -16,6 +16,10 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -60,14 +64,17 @@ public static  int PICK_Back_Request=0;
         uid=fAuth.getCurrentUser().getUid();
         Log.e("gg",uid);
 
-        reff= FirebaseDatabase.getInstance().getReference("Story").child(uid).child(title);
-        reff.addValueEventListener(new ValueEventListener() {
+        reff= FirebaseDatabase.getInstance().getReference("Story");
+        reff.orderByChild("uid").equalTo(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    mStoryTitle.setText(snapshot.child("storyTitleNew").getValue().toString());
-                    mStoryDes.setText(snapshot.child("storyDes").getValue().toString());
-                    Glide.with(MyStoryDetailActivity.this).load(snapshot.child("storyImg").getValue().toString()).into(mImageView);
-
+                for(DataSnapshot snapshot1:snapshot.getChildren()){
+                    if(snapshot1.child("storyTitle").getValue().toString().equals(title)){
+                        mStoryTitle.setText(snapshot1.child("storyTitleNew").getValue().toString());
+                        mStoryDes.setText(snapshot1.child("storyDes").getValue().toString());
+                        Glide.with(MyStoryDetailActivity.this).load(snapshot1.child("storyImg").getValue().toString()).into(mImageView);
+                    }
+                }
             }
 
             @Override
@@ -109,13 +116,7 @@ public static  int PICK_Back_Request=0;
             }
         });
 
-        //todo change image button click event
-        mStoryChangeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openGallery();
-            }
-        });
+
 
         //todo addPart Card click event
         mAddPart.setOnClickListener(new View.OnClickListener() {
@@ -128,97 +129,6 @@ public static  int PICK_Back_Request=0;
             }
         });
 
-        //todo edit Story title click event
-        mStoryTitleEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder mBuilder=new AlertDialog.Builder(MyStoryDetailActivity.this,R.style.AlertDialog_custom);
-                mBuilder.setTitle("Edit Story's Title");
-                EditText tv=new EditText(MyStoryDetailActivity.this);
-                tv.setHint("new title");
-                tv.setTextColor(getResources().getColor(R.color.white));
-                mBuilder.setView(tv);
-
-                mBuilder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        reff.child("storyTitleNew").setValue(tv.getText().toString());
-                    }
-                });
-                mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                });
-                AlertDialog dialog=mBuilder.create();
-                dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                    @Override
-                    public void onShow(DialogInterface dialogInterface) {
-                        Button posBtn=dialog.getButton(dialogInterface.BUTTON_POSITIVE);
-                        posBtn.setBackgroundColor(getResources().getColor(R.color.orange));
-                        posBtn.setTextColor(getResources().getColor(R.color.black));
-                        posBtn.setTextSize(13);
-                        posBtn.setAllCaps(false);
-
-                        Button negBtn=dialog.getButton(dialogInterface.BUTTON_NEGATIVE);
-                        negBtn.setBackgroundColor(getResources().getColor(R.color.green));
-                        negBtn.setTextColor(getResources().getColor(R.color.black));
-                        negBtn.setTextSize(13);
-                        negBtn.setAllCaps(false);
-
-
-                    }
-                });
-                dialog.show();
-
-            }
-        });
-
-        mStoryDesEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder mBuilder=new AlertDialog.Builder(MyStoryDetailActivity.this,R.style.AlertDialog_custom);
-                mBuilder.setTitle("Edit Story's Des");
-                EditText tv=new EditText(MyStoryDetailActivity.this);
-                tv.setHint("new description");
-                tv.setTextColor(getResources().getColor(R.color.white));
-                mBuilder.setView(tv);
-
-                mBuilder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        reff.child("storyDes").setValue(tv.getText().toString());
-                    }
-                });
-                mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                });
-                AlertDialog dialog=mBuilder.create();
-                dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                    @Override
-                    public void onShow(DialogInterface dialogInterface) {
-                        Button posBtn=dialog.getButton(dialogInterface.BUTTON_POSITIVE);
-                        posBtn.setBackgroundColor(getResources().getColor(R.color.orange));
-                        posBtn.setTextColor(getResources().getColor(R.color.black));
-                        posBtn.setTextSize(13);
-                        posBtn.setAllCaps(false);
-
-                        Button negBtn=dialog.getButton(dialogInterface.BUTTON_NEGATIVE);
-                        negBtn.setBackgroundColor(getResources().getColor(R.color.green));
-                        negBtn.setTextColor(getResources().getColor(R.color.black));
-                        negBtn.setTextSize(13);
-                        negBtn.setAllCaps(false);
-
-
-                    }
-                });
-                dialog.show();
-            }
-        });
 
 
     }
@@ -244,15 +154,30 @@ public static  int PICK_Back_Request=0;
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater=getMenuInflater();
+        inflater.inflate(R.menu.mybookdetail_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.bookDetail_menu:Intent intent=new Intent(MyStoryDetailActivity.this,EditMyStoryInfoActivity.class);
+                                        intent.putExtra("uid",uid);
+                                        intent.putExtra("title",title);
+                                        startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void inits() {
         mImageView=findViewById(R.id.myStoryDetail_img);
         mStoryTitle=findViewById(R.id.myStoryDetail_title);
         mStoryDes=findViewById(R.id.myStoryDetail_Des);
-        mStoryTitleEdit=findViewById(R.id.myStoryDetail_titleEdit);
-        mStoryDesEdit=findViewById(R.id.myStoryDetail_desEdit);
-        mStoryChangeButton=findViewById(R.id.myStoryDetail_changeImg);
         View v=findViewById(R.id.myStoryDetail_toolbar);
-        mToolbar=v.findViewById(R.id.transparentToolbar);
+        mToolbar=v.findViewById(R.id.transparentNormalToolbar);
         mPartRecyclerview=findViewById(R.id.myStoryDetail_partRecycler);
         mAddPart=findViewById(R.id.myStoryDetail_addNewPart);
     }

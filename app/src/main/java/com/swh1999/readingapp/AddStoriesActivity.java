@@ -56,7 +56,7 @@ public class AddStoriesActivity extends AppCompatActivity {
         UID=fAuth.getCurrentUser().getUid();
 
         //todo Story's database reff & storage reff
-        reff= FirebaseDatabase.getInstance().getReference("Story").child(UID);
+        reff= FirebaseDatabase.getInstance().getReference("Story");
         storageReff=FirebaseStorage.getInstance().getReference("Story");
         reffStory=FirebaseDatabase.getInstance().getReference("StoryViewer");
 
@@ -92,6 +92,9 @@ public class AddStoriesActivity extends AppCompatActivity {
                     AlertDialog dialog=mBuilder.create();
                     dialog.show();
                 }
+                else{
+                    finish();
+                }
             }
         });
 
@@ -122,12 +125,12 @@ public class AddStoriesActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Uri uri) {
                                     //todo set about story to under Story
-                                    StoryInfo info=new StoryInfo(UID,title,des,uri.toString(),title,tag);
-                                    reff.child(title).setValue(info);
+                                    StoryInfo info=new StoryInfo(UID,title,des,uri.toString(),title,tag,0,0,0);
+                                    reff.push().setValue(info);
 
-                                    //todo set about story's total viewer and like to StoryView
+                                   /* //todo set about story's total viewer and like to StoryView
                                     StoryViewerInfo viewerInfo=new StoryViewerInfo(title,UID,0,0);
-                                    reffStory.push().setValue(viewerInfo);
+                                    reffStory.push().setValue(viewerInfo);*/
 
                                     Intent intent=new Intent(AddStoriesActivity.this,AddPartActivity.class);
                                     intent.putExtra("storyTitle",title);
@@ -182,7 +185,7 @@ public class AddStoriesActivity extends AppCompatActivity {
         mStoryDes=findViewById(R.id.addStoriesActivity_des);
         mStoryBtn=findViewById(R.id.addStoriesActivity_btn);
         View v=findViewById(R.id.addStoriesActivity_toolbar);
-        mToolbar=v.findViewById(R.id.transparentToolbar);
+        mToolbar=v.findViewById(R.id.transparentNormalToolbar);
         mProgressBar=findViewById(R.id.addStoriesActivity_progressbar);
     }
 }

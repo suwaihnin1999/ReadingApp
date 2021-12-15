@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <include layout="@layout/transparent_toolbar"
+    <include layout="@layout/trans_normaltoolbar"
         android:id="@+id/addPart_toolbar"/>
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"

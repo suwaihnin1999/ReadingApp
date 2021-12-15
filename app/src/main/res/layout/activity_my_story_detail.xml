@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MyStoryDetailActivity">
-    <include layout="@layout/transparent_toolbar"
+    <include layout="@layout/trans_normaltoolbar"
         android:id="@+id/myStoryDetail_toolbar"/>
     
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -22,40 +22,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <Button
-                android:id="@+id/myStoryDetail_changeImg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="@color/orange"
-                android:fontFamily="@font/playfairdisplay_medium"
-                android:text="Change Image"
-                android:textAllCaps="false"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/myStoryDetail_Des"
-                app:layout_constraintTop_toBottomOf="@+id/myStoryDetail_Des"
-                app:layout_constraintVertical_bias="0.0" />
-
-            <ImageView
-                android:id="@+id/myStoryDetail_titleEdit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:src="@drawable/ic_edit"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/myStoryDetail_title"
-                app:layout_constraintTop_toTopOf="@+id/myStoryDetail_title" />
-
-            <ImageView
-                android:id="@+id/myStoryDetail_desEdit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:src="@drawable/ic_edit"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/myStoryDetail_Des"
-                app:layout_constraintTop_toTopOf="@+id/myStoryDetail_Des" />
 
             <ImageView
                 android:id="@+id/myStoryDetail_img"
@@ -63,7 +29,7 @@
                 android:layout_height="170dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="16dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_launcher_background"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -76,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
+                android:layout_marginEnd="16dp"
                 android:fontFamily="@font/playfairdisplay_black"
                 android:text="Story Title"
                 android:textColor="@color/black"
@@ -90,14 +56,17 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="32dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
                 android:fontFamily="@font/playfairdisplay_regular"
                 android:text="Story Description"
                 android:textColor="@color/black"
                 android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/myStoryDetail_title"
-                app:layout_constraintTop_toBottomOf="@+id/myStoryDetail_title" />
+                app:layout_constraintTop_toBottomOf="@+id/myStoryDetail_title"
+                app:layout_constraintVertical_bias="0.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

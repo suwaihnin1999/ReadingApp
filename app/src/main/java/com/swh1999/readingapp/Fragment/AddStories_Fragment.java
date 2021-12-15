@@ -107,8 +107,8 @@ public class AddStories_Fragment extends Fragment {
         //todo set layoutManager for recyclerview
         mStoriesRecycler.setLayoutManager(new GridLayoutManager(getContext(),2));
         storyList=new ArrayList<>();
-        reff=FirebaseDatabase.getInstance().getReference("Story").child(uid);
-        reff.addValueEventListener(new ValueEventListener() {
+        reff=FirebaseDatabase.getInstance().getReference("Story");
+        reff.orderByChild("uid").equalTo(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 storyList.clear();

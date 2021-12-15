@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AddStoriesActivity">
-    <include layout="@layout/transparent_toolbar"
+    <include layout="@layout/trans_normaltoolbar"
         android:id="@+id/addStoriesActivity_toolbar"/>
 
     <ScrollView

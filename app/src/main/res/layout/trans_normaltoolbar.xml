@@ -10,18 +10,10 @@
     android:animateLayoutChanges="true">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/transparentToolbar"
+        android:id="@+id/transparentNormalToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@null">
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:id="@+id/profile_img"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/ic_user"
-            android:layout_gravity="end"
-            />
 
     </androidx.appcompat.widget.Toolbar>
 

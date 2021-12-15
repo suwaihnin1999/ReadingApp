@@ -55,7 +55,7 @@ DrawerLayout mDrawer;
 DatabaseReference reffBook,reffUser,reffPart,reffSelectedPart,reffVoterInfo,reffVote,reffVote1,reffTotVoteIncrease,reffTotVoteDecrease;
 ArrayList<StoryPartInfo> partList;
 BottomNavigationView botNaviView;
-String key,uid,totalkey;
+String key,uid,totalkey,keyStory;
 FirebaseAuth fAuth;
 int vote,viewer,totalVote;
 
@@ -75,7 +75,7 @@ int vote,viewer,totalVote;
 
         inits();
 
-        mToolbar.setTitle(title);
+
         setSupportActionBar(mToolbar);
         Drawable menu1=getResources().getDrawable(R.drawable.ic_back);
         menu1.setColorFilter(getResources().getColor(R.color.black), PorterDuff.Mode.SRC_ATOP);
@@ -138,12 +138,19 @@ int vote,viewer,totalVote;
         getStoryTotalVote();
 
         //todo to get story's name and image
-        reffBook=FirebaseDatabase.getInstance().getReference("Story").child(authorId).child(title);
-        reffBook.addValueEventListener(new ValueEventListener() {
+        reffBook=FirebaseDatabase.getInstance().getReference("Story");
+        reffBook.orderByChild("uid").equalTo(authorId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                bookName.setText(snapshot.child("storyTitleNew").getValue().toString());
-                Glide.with(ReadBookActivity.this).load(snapshot.child("storyImg").getValue().toString()).into(bookImg);
+                for(DataSnapshot snapshot1:snapshot.getChildren()){
+                    if(snapshot1.child("storyTitle").getValue().toString().equals(title)){
+                        keyStory=snapshot1.getKey();
+                        mToolbar.setTitle(snapshot1.child("storyTitleNew").getValue().toString());
+                        bookName.setText(snapshot1.child("storyTitleNew").getValue().toString());
+                        Glide.with(ReadBookActivity.this).load(snapshot1.child("storyImg").getValue().toString()).into(bookImg);
+                    }
+                }
+
             }
 
             @Override
@@ -262,9 +269,9 @@ int vote,viewer,totalVote;
                                     reffVote1.child("like").setValue(vote+1);
 
                                     //todo set story total like increase
-                                    Log.e("gg","totalKey"+totalkey+" total Vote"+totalVote);
-                                    reffTotVoteIncrease=FirebaseDatabase.getInstance().getReference("StoryViewer").child(totalkey);
-                                    reffTotVoteIncrease.child("totalLike").setValue(totalVote+1);
+                                    Log.e("gg","totalKey"+keyStory+" total Vote"+totalVote);
+                                    reffTotVoteIncrease=FirebaseDatabase.getInstance().getReference("Story").child(totalkey);
+                                    reffTotVoteIncrease.child("totalVote").setValue(totalVote+1);
 
                                     //todo get story total like and key
                                     getStoryTotalVote();
@@ -289,8 +296,8 @@ int vote,viewer,totalVote;
 
                         //todo set story total like increase
                         Log.e("gg","totalKey"+totalkey+" total Vote"+totalVote);
-                        reffTotVoteDecrease=FirebaseDatabase.getInstance().getReference("StoryViewer").child(totalkey);
-                        reffTotVoteDecrease.child("totalLike").setValue(totalVote-1);
+                        reffTotVoteDecrease=FirebaseDatabase.getInstance().getReference("Story").child(totalkey);
+                        reffTotVoteDecrease.child("totalVote").setValue(totalVote-1);
 
                         //todo get story total like and key
                         getStoryTotalVote();
@@ -303,14 +310,14 @@ int vote,viewer,totalVote;
 
     private void getStoryTotalVote() {
         //todo get story total like and key to increase
-        reffTotVoteIncrease= FirebaseDatabase.getInstance().getReference("StoryViewer");
-        reffTotVoteIncrease.orderByChild("storyTitle").equalTo(title).addValueEventListener(new ValueEventListener() {
+        reffTotVoteIncrease= FirebaseDatabase.getInstance().getReference("Story");
+        reffTotVoteIncrease.orderByChild("storyTitleNew").equalTo(title).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for(DataSnapshot snapshot1:snapshot.getChildren()){
-                    if(snapshot1.child("authorId").getValue().equals(authorId)){
+                    if(snapshot1.child("uid").getValue().equals(authorId)){
                         totalkey=snapshot1.getKey().toString();
-                        totalVote=Integer.parseInt(snapshot1.child("totalLike").getValue().toString());
+                        totalVote=Integer.parseInt(snapshot1.child("totalVote").getValue().toString());
 
                         Log.e("gg","total="+totalkey+" "+totalVote);
                     }

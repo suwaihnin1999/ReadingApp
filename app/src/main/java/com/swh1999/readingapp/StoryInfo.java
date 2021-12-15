@@ -7,14 +7,21 @@ public class StoryInfo {
     private String storyDes;
     private String storyImg;
     private String tag;
+    private int totalVote;
+    private int totalView;
+    private int totalCmt;
 
-    public StoryInfo(String uid,String storyTitle, String storyDes, String storyImg,String storyTitleNew,String tag) {
+    public StoryInfo(String uid,String storyTitle, String storyDes, String storyImg,String storyTitleNew,String tag,
+                     int totalVote,int totalView,int totalCmt) {
         this.uid=uid;
         this.storyTitle = storyTitle;
         this.storyDes = storyDes;
         this.storyImg = storyImg;
         this.storyTitleNew=storyTitleNew;
         this.tag=tag;
+        this.totalView=totalView;
+        this.totalVote=totalVote;
+        this.totalCmt=totalCmt;
     }
 
     public StoryInfo() {
@@ -66,5 +73,29 @@ public class StoryInfo {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public int getTotalVote() {
+        return totalVote;
+    }
+
+    public void setTotalVote(int totalVote) {
+        this.totalVote = totalVote;
+    }
+
+    public int getTotalView() {
+        return totalView;
+    }
+
+    public void setTotalView(int totalView) {
+        this.totalView = totalView;
+    }
+
+    public int getTotalCmt() {
+        return totalCmt;
+    }
+
+    public void setTotalCmt(int totalCmt) {
+        this.totalCmt = totalCmt;
     }
 }

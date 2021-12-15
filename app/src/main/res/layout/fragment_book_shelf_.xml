@@ -5,15 +5,33 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragment.BookShelf_Fragment">
-    <include layout="@layout/navi_toolbar"
-        android:id="@+id/bookShelf_toolbar"/>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/bookShelf_progressbar"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No books on your book shelf."
+        android:textColor="@color/orange"
+        android:textSize="20sp"
+        android:visibility="gone"
+        android:id="@+id/bookShelf_infoText"
+        android:layout_marginTop="60dp"
+        android:fontFamily="@font/playfairdisplay_bold"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+       />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="60dp"
         android:id="@+id/bookShelf_recycler"
         android:layout_marginBottom="10dp"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"

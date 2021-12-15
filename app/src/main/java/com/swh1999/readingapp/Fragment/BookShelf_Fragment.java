@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +27,8 @@ import com.swh1999.readingapp.BookShelfAdapter;
 import com.swh1999.readingapp.LibraryBookInfo;
 import com.swh1999.readingapp.R;
 import com.swh1999.readingapp.StoryInfo;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -74,13 +78,14 @@ public class BookShelf_Fragment extends Fragment {
     }
 
     RecyclerView mBookShelfRecycler;
-    Toolbar mToolbar;
     DatabaseReference reffLibrary,reffStory;
     FirebaseAuth fAuth;
     String uid;
     ArrayList<LibraryBookInfo> mLibraryList;
     ArrayList<StoryInfo> mStoryList;
     int temp;
+    ProgressBar mProgressbar;
+    TextView mTextView;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -89,8 +94,6 @@ public class BookShelf_Fragment extends Fragment {
         //todo get current user's id
         fAuth=FirebaseAuth.getInstance();
         uid=fAuth.getCurrentUser().getUid();
-
-        mToolbar.setTitle("BookShelf");
 
         mLibraryList=new ArrayList<>();
         mStoryList=new ArrayList<>();
@@ -106,24 +109,37 @@ public class BookShelf_Fragment extends Fragment {
                     mLibraryList.add(bookInfo);
                 }
                 Log.e("gg","Library list="+mLibraryList.size());
+
+                if(mLibraryList.size()==0){
+                    mTextView.setVisibility(View.VISIBLE);
+                    mProgressbar.setVisibility(View.GONE);
+                }
+                mStoryList.clear();
                 for(int i=0;i<mLibraryList.size();i++){
                     temp=0;
                     String authorId=mLibraryList.get(i).getAuthorId();
                     String title=mLibraryList.get(i).getTitle();
                     Log.e("gg","author Id="+authorId+" title="+title);
-                    reffStory=FirebaseDatabase.getInstance().getReference("Story").child(authorId).child(title);
-                    reffStory.addValueEventListener(new ValueEventListener() {
+                    reffStory=FirebaseDatabase.getInstance().getReference("Story");
+                    reffStory.orderByChild("uid").equalTo(authorId).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            StoryInfo storyInfo=snapshot.getValue(StoryInfo.class);
-                            Log.e("gg","story info="+storyInfo.getStoryTitleNew());
-                            mStoryList.add(storyInfo);
-                            temp++;
-
-                            if(temp==mLibraryList.size()){
-                                Log.e("gg","story list="+mStoryList.size());
-                                mBookShelfRecycler.setAdapter(new BookShelfAdapter(getContext(),mStoryList));
+                            for(DataSnapshot snapshot1:snapshot.getChildren()){
+                                if(snapshot1.child("storyTitleNew").getValue().toString().equals(title)){
+                                    StoryInfo storyInfo=snapshot1.getValue(StoryInfo.class);
+                                    Log.e("gg","story info="+storyInfo.getStoryTitleNew());
+                                    mStoryList.add(storyInfo);
+                                    temp++;
+                                }
+                                if(temp==mLibraryList.size()){
+                                    Log.e("gg","story list="+mStoryList.size());
+                                    mBookShelfRecycler.setAdapter(new BookShelfAdapter(getContext(),mStoryList));
+                                    mProgressbar.setVisibility(View.GONE);
+                                }
                             }
+
+
+
                         }
 
                         @Override
@@ -152,8 +168,8 @@ public class BookShelf_Fragment extends Fragment {
     }
 
     private void init() {
-        View v=getView().findViewById(R.id.bookShelf_toolbar);
-        mToolbar=v.findViewById(R.id.navi_toolbar);
         mBookShelfRecycler=getView().findViewById(R.id.bookShelf_recycler);
+        mProgressbar=getView().findViewById(R.id.bookShelf_progressbar);
+        mTextView=getView().findViewById(R.id.bookShelf_infoText);
     }
 }

@@ -56,7 +56,7 @@ public class HomeFragment extends Fragment {
     SearchView mSearchView;
     RecyclerView mTrendingRecycler;
     List<StoryInfo> storyList;
-    List<StoryViewerInfo> storyViewerInfos;
+    List<StoryInfo> storyViewerInfos;
     DatabaseReference reff,reffStory;
     FirebaseAuth fAuth;
     String uid;
@@ -125,17 +125,20 @@ public class HomeFragment extends Fragment {
         mTrendingRecycler.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
 
         //todo get viewer 10000 story Name
-        reff=FirebaseDatabase.getInstance().getReference("StoryViewer");
+        reff=FirebaseDatabase.getInstance().getReference("Story");
         reff.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 storyViewerInfos.clear();
                 for(DataSnapshot snapshot1:snapshot.getChildren()){
                     if(Integer.parseInt(snapshot1.child("totalView").getValue().toString())>100000){
-                        storyViewerInfos.add(snapshot1.getValue(StoryViewerInfo.class));
+                        storyViewerInfos.add(snapshot1.getValue(StoryInfo.class));
                     }
                 }
-                storyList.clear();
+
+                mTrendingRecycler.setAdapter(new TrendingBookAdapter(getContext(),storyViewerInfos));
+                mProgressbar.setVisibility(View.GONE);
+               /* storyList.clear();
                 Log.e("gg","viewer list"+storyViewerInfos.size());
                 for(int i=0;i<storyViewerInfos.size();i++){
                     temp=0;
@@ -167,7 +170,7 @@ public class HomeFragment extends Fragment {
                         }
                     });
 
-                }
+                }*/
             }
 
             @Override

@@ -9,14 +9,32 @@
         <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/activity_add_part.xml" value="0.22" />
         <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/activity_add_stories.xml" value="0.18" />
         <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/activity_book_detail.xml" value="0.22" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/activity_edit_my_story_info.xml" value="0.22" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/activity_edit_profile.xml" value="0.20416666666666666" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/activity_main.xml" value="0.20416666666666666" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/activity_main2.xml" value="0.20416666666666666" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/activity_my_story_detail.xml" value="0.33" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/activity_profile.xml" value="0.18" />
         <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/activity_read_book.xml" value="0.18" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/book_navi_header.xml" value="0.15" />
         <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/change_textcolor_layout.xml" value="0.2" />
         <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/change_textsize_layout.xml" value="0.20416666666666666" />
-        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/fragment_book_shelf_.xml" value="0.20416666666666666" />
-        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/fragment_home.xml" value="0.20416666666666666" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/fragment_book_shelf_.xml" value="0.18" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/fragment_home.xml" value="0.25" />
         <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/library_layout.xml" value="0.25" />
         <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/navi_toolbar.xml" value="0.20416666666666666" />
         <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/normal_toolbar.xml" value="0.20416666666666666" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/part_layout.xml" value="0.20416666666666666" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/story_layout.xml" value="0.20416666666666666" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/trans_normaltoolbar.xml" value="0.20416666666666666" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/transparent_toolbar.xml" value="0.18" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/trendingbook_layout.xml" value="0.22" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/layout/worklist_layout.xml" value="0.18" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/menu/book_bottomnavi.xml" value="0.20416666666666666" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/menu/bottom_navimenu.xml" value="0.20416666666666666" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/menu/mybookdetail_menu.xml" value="0.20416666666666666" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/menu/navi_menu.xml" value="0.20416666666666666" />
+        <entry key="..\:/Nura(android Exercise)/ReadingApp/app/src/main/res/menu/part_menu.xml" value="0.20416666666666666" />
       </map>
     </option>
   </component>

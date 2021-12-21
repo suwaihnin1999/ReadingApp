@@ -118,7 +118,7 @@ public class ProfileActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.bookDetail_menu:
-                Intent intent=new Intent(ProfileActivity.this,EditProfileActivity.class);
+                Intent intent=new Intent(ProfileActivity.this, ProfileListActivity.class);
                 startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

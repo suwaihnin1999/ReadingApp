@@ -10,11 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity2"
-            android:exported="false" />
-        <activity
             android:name=".EditProfileActivity"
             android:exported="false" />
+        <activity
+            android:name=".ProfileListActivity"
+            android:exported="false" />
+
         <activity
             android:name=".EditMyStoryInfoActivity"
             android:exported="false" />
@@ -22,7 +23,6 @@
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity android:name=".ReadBookActivity" />
-        <activity android:name=".SimpleBookListAdapter" />
         <activity android:name=".BookDetailActivity" />
         <activity android:name=".ImageShowActivity" />
         <activity android:name=".MyStoryDetailActivity" />

@@ -1,24 +1,17 @@
 package com.swh1999.readingapp.Fragment;
 
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -30,7 +23,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.swh1999.readingapp.R;
 import com.swh1999.readingapp.StoryInfo;
-import com.swh1999.readingapp.StoryViewerInfo;
 import com.swh1999.readingapp.TrendingBookAdapter;
 
 import java.util.ArrayList;
@@ -138,39 +130,7 @@ public class HomeFragment extends Fragment {
 
                 mTrendingRecycler.setAdapter(new TrendingBookAdapter(getContext(),storyViewerInfos));
                 mProgressbar.setVisibility(View.GONE);
-               /* storyList.clear();
-                Log.e("gg","viewer list"+storyViewerInfos.size());
-                for(int i=0;i<storyViewerInfos.size();i++){
-                    temp=0;
-                    String uid=storyViewerInfos.get(i).getAuthorId();
-                    String title=storyViewerInfos.get(i).getStoryTitle();
-                    Log.e("gg","viewer="+uid+" "+title);
 
-                    DatabaseReference refStory=FirebaseDatabase.getInstance().getReference("Story").child(uid).child(title);
-                    refStory.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            StoryInfo info=snapshot.getValue(StoryInfo.class);
-                            Log.e("gg","info="+info.getStoryTitle());
-                            storyList.add(info);
-
-                            //todo to check last looping?
-                            temp++;
-                            if(temp==storyViewerInfos.size()){
-                                Log.e("gg","storyList="+storyList.size());
-                                mTrendingRecycler.setAdapter(new TrendingBookAdapter(getContext(),storyList));
-                                mProgressbar.setVisibility(View.GONE);
-                            }
-                            Log.e("gg","temp="+temp);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
-                }*/
             }
 
             @Override

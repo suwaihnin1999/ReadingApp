@@ -10,12 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".FollowActivity"
+            android:exported="false" />
+        <activity
             android:name=".EditProfileActivity"
             android:exported="false" />
         <activity
             android:name=".ProfileListActivity"
             android:exported="false" />
-
         <activity
             android:name=".EditMyStoryInfoActivity"
             android:exported="false" />

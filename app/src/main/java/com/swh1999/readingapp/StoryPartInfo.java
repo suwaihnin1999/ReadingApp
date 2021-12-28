@@ -4,13 +4,12 @@ public class StoryPartInfo {
     private String partTitle;
     private String partDes;
     private int partView;
-    private int like;
 
-    public StoryPartInfo(String partTitle, String partDes,int partView,int like) {
+    public StoryPartInfo(String partTitle, String partDes,int partView) {
         this.partTitle = partTitle;
         this.partDes = partDes;
         this.partView=partView;
-        this.like=like;
+
     }
 
     public StoryPartInfo() {
@@ -40,11 +39,5 @@ public class StoryPartInfo {
         this.partView = partView;
     }
 
-    public int getLike() {
-        return like;
-    }
 
-    public void setLike(int like) {
-        this.like = like;
-    }
 }

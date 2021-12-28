@@ -17,9 +17,11 @@ import java.util.ArrayList;
 public class BookShelfAdapter extends RecyclerView.Adapter<BookShelfAdapter.myViewHolder> {
     Context context;
     ArrayList<StoryInfo> mLibraryList;
-    public BookShelfAdapter(Context context, ArrayList<StoryInfo> mLibraryList) {
+    onItemClickListener listener;
+    public BookShelfAdapter(Context context, ArrayList<StoryInfo> mLibraryList,onItemClickListener listener) {
         this.context=context;
         this.mLibraryList=mLibraryList;
+        this.listener=listener;
     }
 
     @NonNull
@@ -33,11 +35,17 @@ public class BookShelfAdapter extends RecyclerView.Adapter<BookShelfAdapter.myVi
     public void onBindViewHolder(@NonNull myViewHolder holder, int position) {
         holder.mTextView.setText(mLibraryList.get(position).getStoryTitleNew());
         Glide.with(context).load(mLibraryList.get(position).getStoryImg()).into(holder.mImageView);
+        holder.bind(mLibraryList.get(position),listener);
+
     }
 
     @Override
     public int getItemCount() {
         return mLibraryList.size();
+    }
+
+    public interface onItemClickListener{
+        void onItemClick(StoryInfo storyInfo);
     }
 
     public class myViewHolder extends RecyclerView.ViewHolder {
@@ -47,6 +55,15 @@ public class BookShelfAdapter extends RecyclerView.Adapter<BookShelfAdapter.myVi
             super(itemView);
             mImageView=itemView.findViewById(R.id.library_bookImg);
             mTextView=itemView.findViewById(R.id.library_bookTitle);
+        }
+
+        public void bind(StoryInfo storyInfo, onItemClickListener listener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onItemClick(storyInfo);
+                }
+            });
         }
     }
 }

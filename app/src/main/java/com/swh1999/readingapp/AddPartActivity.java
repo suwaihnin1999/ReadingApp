@@ -1,10 +1,5 @@
 package com.swh1999.readingapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -15,6 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -118,12 +118,9 @@ int maxid;
                 else{
                     mProgressbar.setVisibility(View.VISIBLE);
                     Log.e("gg","max id for firebase="+maxid);
-                    StoryPartInfo partInfo=new StoryPartInfo(title,des,0,0);
+                    StoryPartInfo partInfo=new StoryPartInfo(title,des,0);
                     reff.child(String.valueOf(maxid)).setValue(partInfo);
 
-                    //todo set voter info
-                    /*reffPartVote=FirebaseDatabase.getInstance().getReference("Voter").child(uid).child(storyTitle);
-                    reffPartVote.child(title).setValue("");*/
                     Toast.makeText(AddPartActivity.this, "Successfully uploaded "+title, Toast.LENGTH_SHORT).show();
                     mProgressbar.setVisibility(View.GONE);
                     finish();

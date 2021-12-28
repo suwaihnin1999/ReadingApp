@@ -1,5 +1,6 @@
 package com.swh1999.readingapp.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.swh1999.readingapp.BookShelfAdapter;
 import com.swh1999.readingapp.LibraryBookInfo;
 import com.swh1999.readingapp.R;
+import com.swh1999.readingapp.ReadBookActivity;
 import com.swh1999.readingapp.StoryInfo;
 
 import java.util.ArrayList;
@@ -81,6 +83,7 @@ public class BookShelf_Fragment extends Fragment {
     int temp;
     ProgressBar mProgressbar;
     TextView mTextView;
+    BookShelfAdapter bookShelfAdapter;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -93,60 +96,44 @@ public class BookShelf_Fragment extends Fragment {
         mLibraryList=new ArrayList<>();
         mStoryList=new ArrayList<>();
 
+
+
         mBookShelfRecycler.setLayoutManager(new GridLayoutManager(getContext(),3));
+        bookShelfAdapter=new BookShelfAdapter(getContext(),mStoryList,
+                new BookShelfAdapter.onItemClickListener(){
+            public void onItemClick(StoryInfo storyInfo){
+                Intent intent=new Intent(getContext(), ReadBookActivity.class);
+                intent.putExtra("title",storyInfo.getStoryTitle());
+                intent.putExtra("authorId",storyInfo.getUid());
+                startActivity(intent);
+            }
+        });
+        mBookShelfRecycler.setAdapter(bookShelfAdapter);
+
+        getLibraryList();
+
+
+    }
+
+    private void getLibraryList() {
         reffLibrary=FirebaseDatabase.getInstance().getReference("Library").child(uid);
         reffLibrary.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mLibraryList.clear();
-                for(DataSnapshot snapshot1:snapshot.getChildren()){
-                    LibraryBookInfo bookInfo=snapshot1.getValue(LibraryBookInfo.class);
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    LibraryBookInfo bookInfo = snapshot1.getValue(LibraryBookInfo.class);
                     mLibraryList.add(bookInfo);
                 }
-                Log.e("gg","Library list="+mLibraryList.size());
+                Log.e("gg", "Library list=" + mLibraryList.size());
 
-                if(mLibraryList.size()==0){
+                if (mLibraryList.size() == 0) {
                     mTextView.setVisibility(View.VISIBLE);
                     mProgressbar.setVisibility(View.GONE);
                 }
-                mStoryList.clear();
-                for(int i=0;i<mLibraryList.size();i++){
-                    temp=0;
-                    String authorId=mLibraryList.get(i).getAuthorId();
-                    String title=mLibraryList.get(i).getTitle();
-                    Log.e("gg","author Id="+authorId+" title="+title);
-                    reffStory=FirebaseDatabase.getInstance().getReference("Story");
-                    reffStory.orderByChild("uid").equalTo(authorId).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            for(DataSnapshot snapshot1:snapshot.getChildren()){
-                                if(snapshot1.child("storyTitle").getValue().toString().equals(title)){
-                                    StoryInfo storyInfo=snapshot1.getValue(StoryInfo.class);
-                                    Log.e("gg","story info="+storyInfo.getStoryTitleNew());
-                                    mStoryList.add(storyInfo);
-                                    temp++;
-                                }
-                                if(temp==mLibraryList.size()){
-                                    Log.e("gg","story list="+mStoryList.size());
-                                    mBookShelfRecycler.setAdapter(new BookShelfAdapter(getContext(),mStoryList));
-                                    mProgressbar.setVisibility(View.GONE);
-                                }
-                            }
-
-
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
+                else{
+                    showLibraryList();
                 }
-
-
-
-
             }
 
             @Override
@@ -154,12 +141,31 @@ public class BookShelf_Fragment extends Fragment {
 
             }
         });
+    }
 
+    private void showLibraryList() {
+        FirebaseDatabase.getInstance().getReference("Story").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mStoryList.clear();
+                for(DataSnapshot snapshot1:snapshot.getChildren()){
+                    StoryInfo sf=snapshot1.getValue(StoryInfo.class);
+                    for(LibraryBookInfo LB:mLibraryList){
+                        if(LB.getAuthorId().toString().equals(sf.getUid()) &&
+                        LB.getTitle().equals(sf.getStoryTitle())){
+                            mStoryList.add(sf);
+                        }
+                    }
+                }
+                bookShelfAdapter.notifyDataSetChanged();
+                mProgressbar.setVisibility(View.GONE);
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-
-        //mBookShelfRecycler.setAdapter(new BookShelfAdapter(getContext(),mLibraryList));
-
+            }
+        });
     }
 
     private void init() {

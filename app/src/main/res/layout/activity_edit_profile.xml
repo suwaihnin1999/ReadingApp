@@ -37,6 +37,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:orientation="horizontal"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             app:layout_constraintEnd_toEndOf="@+id/textView13"
             app:layout_constraintStart_toStartOf="@+id/textView13"
             app:layout_constraintTop_toBottomOf="@+id/textView13">
@@ -45,6 +48,8 @@
                 android:id="@+id/profilePic_profile"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:src="@drawable/ic_user"
                 app:layout_constraintEnd_toStartOf="@+id/guideline"
                 app:layout_constraintStart_toStartOf="parent"
@@ -90,7 +95,6 @@
             android:id="@+id/view4"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="8dp"
             android:background="@color/grey"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -101,7 +105,9 @@
             android:id="@+id/background_linearLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
             app:layout_constraintEnd_toEndOf="@+id/profile_linearLayout"
             app:layout_constraintStart_toStartOf="@+id/profile_linearLayout"
             app:layout_constraintTop_toBottomOf="@+id/profile_linearLayout">
@@ -111,6 +117,7 @@
                 android:layout_width="50dp"
                 android:layout_height="70dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_launcher_background"
                 app:layout_constraintEnd_toStartOf="@+id/guideline"
@@ -153,11 +160,11 @@
 
 
         </LinearLayout>
+
         <View
             android:id="@+id/view1"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:background="@color/grey"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,10 +34,12 @@ public class ProfileActivity extends AppCompatActivity {
     Button mFollowBtn;
     RecyclerView mWorkRecycler;
     Toolbar mToolbar;
-    DatabaseReference mReffProfile, mReffWork, mReff;
+    DatabaseReference mReffProfile, mReffWork;
     FirebaseAuth fAuth;
-    String uid, intentUid;
+    String uid, intentUid,username;
     ArrayList<StoryInfo> storylist;
+    LinearLayout workLayout,followerLayout,followingLayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +49,6 @@ public class ProfileActivity extends AppCompatActivity {
         init();
 
         intentUid = getIntent().getStringExtra("uid");
-
 
         mToolbar.setTitle("");
         setSupportActionBar(mToolbar);
@@ -64,12 +66,22 @@ public class ProfileActivity extends AppCompatActivity {
         if (intentUid.equals(uid)) {
             mFollowBtn.setVisibility(View.GONE);
         }
+        else{
+            //todo check follow or not
+            checkFollow();
 
-        mReffProfile = FirebaseDatabase.getInstance().getReference("Profile").child(uid);
+        }
+        //todo get follower count
+        getFollowerCount();
+        //todo get following count
+        getFollowingCount();
+
+        mReffProfile = FirebaseDatabase.getInstance().getReference("Profile").child(intentUid);
         mReffProfile.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mUsername.setText(snapshot.child("username").getValue().toString());
+                username=snapshot.child("username").getValue().toString();
                 mWorkCountTitle.setText("Stories by " + snapshot.child("username").getValue().toString());
                 Glide.with(ProfileActivity.this).load(snapshot.child("profileImg").getValue().toString()).into(mProfile);
 
@@ -83,7 +95,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         storylist = new ArrayList<>();
         mReffWork = FirebaseDatabase.getInstance().getReference("Story");
-        mReffWork.orderByChild("uid").equalTo(uid).addValueEventListener(new ValueEventListener() {
+        mReffWork.orderByChild("uid").equalTo(intentUid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mWorkCount.setText(String.valueOf(snapshot.getChildrenCount()));
@@ -105,13 +117,126 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        //todo follow btn click event
+        mFollowBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               if(mFollowBtn.getText().toString().equals("Follow")){
+                   mFollowBtn.setText("Following");
+                   FirebaseDatabase.getInstance().getReference("Follow").child(intentUid).child("Follower")
+                           .child(uid).setValue(true);
+                   FirebaseDatabase.getInstance().getReference("Follow").child(uid).child("Following")
+                           .child(intentUid).setValue(true);
+               }
+               else{
+                   mFollowBtn.setText("Follow");
+                   FirebaseDatabase.getInstance().getReference("Follow").child(intentUid).child("Follower")
+                           .child(uid).removeValue();
+                   FirebaseDatabase.getInstance().getReference("Follow").child(uid).child("Following")
+                           .child(intentUid).removeValue();
+               }
+
+            }
+        });
+
+        //todo show follower acc event
+        followerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(ProfileActivity.this,FollowActivity.class);
+                intent.putExtra("uid",intentUid);
+                intent.putExtra("temp","0");
+                intent.putExtra("username",username);
+                startActivity(intent);
+            }
+        });
+        //todo show following acc event
+        followingLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(ProfileActivity.this,FollowActivity.class);
+                intent.putExtra("uid",intentUid);
+                intent.putExtra("temp","1");
+                intent.putExtra("username",username);
+                startActivity(intent);
+            }
+        });
+
+    }
+
+    public void checkFollow(){
+        DatabaseReference reff=FirebaseDatabase.getInstance().getReference("Follow").child(intentUid).child("Follower");
+        reff.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+               if(snapshot.child(uid).exists()){
+                   mFollowBtn.setText("Following");
+               }
+               else{
+                   mFollowBtn.setText("Follow");
+               }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void getFollowerCount(){
+        DatabaseReference reff=FirebaseDatabase.getInstance().getReference("Follow")
+                .child(intentUid).child("Follower");
+        reff.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int count=Integer.parseInt(String.valueOf(snapshot.getChildrenCount()));
+                if(count>9999 && count<1000000){
+                    double c=count/1000;
+                    mFollowingCount.setText(String.format("%.1f",c)+"k");
+                }
+                else if(count>=1000000){
+                    double c=count/1000000;
+                    mFollowingCount.setText(String.format("%.1f",c)+"M");
+                }
+                else{
+                    mFollowerCount.setText(String.valueOf(count));
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void getFollowingCount(){
+        DatabaseReference reff=FirebaseDatabase.getInstance().getReference("Follow")
+                .child(intentUid).child("Following");
+        reff.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mFollowingCount.setText(String.valueOf(snapshot.getChildrenCount()));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater=getMenuInflater();
-        inflater.inflate(R.menu.mybookdetail_menu,menu);
-        return true;
+        if(intentUid.equals(uid)){
+            MenuInflater inflater=getMenuInflater();
+            inflater.inflate(R.menu.mybookdetail_menu,menu);
+            return true;
+        }
+       return true;
     }
 
     @Override
@@ -135,5 +260,8 @@ public class ProfileActivity extends AppCompatActivity {
         mWorkRecycler = findViewById(R.id.profile_workRecycler);
         mProfile = findViewById(R.id.profile_profileImg);
         mWorkCountTitle = findViewById(R.id.profile_workCountTitle);
+        workLayout=findViewById(R.id.workCount_layout);
+        followerLayout=findViewById(R.id.followerCount_layout);
+        followingLayout=findViewById(R.id.followingCount_layout);
     }
 }

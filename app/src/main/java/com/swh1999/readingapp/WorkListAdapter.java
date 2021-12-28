@@ -1,6 +1,7 @@
 package com.swh1999.readingapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +32,10 @@ public class WorkListAdapter extends RecyclerView.Adapter<WorkListAdapter.myView
 
     @Override
     public void onBindViewHolder(@NonNull myViewHolder holder, int position) {
-        Glide.with(context).load(storylist.get(position).getStoryImg()).into(holder.mImageView);
-        holder.mTitle.setText(storylist.get(position).getStoryTitleNew());
-        holder.mDes.setText(storylist.get(position).getStoryDes());
-        int totalVote=storylist.get(position).getTotalVote();
+        Glide.with(context).load(storylist.get(holder.getAdapterPosition()).getStoryImg()).into(holder.mImageView);
+        holder.mTitle.setText(storylist.get(holder.getAdapterPosition()).getStoryTitleNew());
+        holder.mDes.setText(storylist.get(holder.getAdapterPosition()).getStoryDes());
+        int totalVote=storylist.get(holder.getAdapterPosition()).getTotalVote();
         if(totalVote>999){
             double tVote=totalVote/1000;
             holder.mVoter.setText(String.format("%.1f",tVote)+"k");
@@ -42,7 +43,7 @@ public class WorkListAdapter extends RecyclerView.Adapter<WorkListAdapter.myView
         else {
             holder.mVoter.setText(String.valueOf(totalVote));
         }
-        int totalView=storylist.get(position).getTotalView();
+        int totalView=storylist.get(holder.getAdapterPosition()).getTotalView();
         if(totalView>999){
             double tVote=totalView/1000;
             holder.mViewer.setText(String.format("%.1f",tVote)+"k");
@@ -50,7 +51,15 @@ public class WorkListAdapter extends RecyclerView.Adapter<WorkListAdapter.myView
         else {
             holder.mViewer.setText(String.valueOf(totalView));
         }
-
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(context,BookDetailActivity.class);
+                intent.putExtra("uid",storylist.get(holder.getAdapterPosition()).getUid());
+                intent.putExtra("title",storylist.get(holder.getAdapterPosition()).getStoryTitle());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

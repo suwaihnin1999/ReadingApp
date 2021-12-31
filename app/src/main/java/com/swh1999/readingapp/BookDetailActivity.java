@@ -42,7 +42,7 @@ public class BookDetailActivity extends AppCompatActivity {
     TextView mAuthor, mView, mVote, mPart;
     Button mReadBtn, mAddLibrary;
     String authorId, title, uid;
-    DatabaseReference reff, reffUser, reffView, reffPart, reffLibrary, reffCheckLibrary;
+    DatabaseReference reffLibrary;
     ChipGroup mChipGroup;
     String[] tag;
     RecyclerView mSimpleRecycler;
@@ -50,7 +50,7 @@ public class BookDetailActivity extends AppCompatActivity {
     ArrayList<StoryInfo> mSimpleBookList;
     FirebaseAuth fAuth;
     ConstraintLayout parent;
-    int temp;
+    int partCount;
     View view1;
 
     ArrayList<String> partId;
@@ -68,6 +68,10 @@ public class BookDetailActivity extends AppCompatActivity {
         //todo get current user's id
         fAuth = FirebaseAuth.getInstance();
         uid = fAuth.getCurrentUser().getUid();
+
+        partId = new ArrayList<>();
+        mSimpleBookTitle = new ArrayList<>();
+        mSimpleBookList = new ArrayList<>();
 
         Log.e("gg", "author id=" + authorId + " uid=" + uid + " " + authorId.equals(uid) + " " + title);
 
@@ -90,18 +94,84 @@ public class BookDetailActivity extends AppCompatActivity {
         });
 
         //todo check this book is already library or not
-        reffCheckLibrary = FirebaseDatabase.getInstance().getReference("Library").child(uid);
-        reffCheckLibrary.addValueEventListener(new ValueEventListener() {
+        checkLibrary();
+
+        //todo to show story title,img,name
+        getStoryInfo();
+
+        //todo show no.of part
+        getStoryPartCount();
+
+        //todo to show author name & profile img
+        getAuthorInfo();
+
+
+        //todo when book read
+        mReadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(BookDetailActivity.this, ReadBookActivity.class);
+                intent.putExtra("authorId", authorId);
+                intent.putExtra("title", title);
+                startActivity(intent);
+            }
+        });
+
+        //todo set the book to my book shelf
+        mAddLibrary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mReadBtn.getText().equals("Continuous")) {
+                    FirebaseDatabase.getInstance().getReference("Library").child(uid).removeValue();
+                    mReadBtn.setText("Read");
+
+                    Snackbar.make(parent,"Removed from your book shelf.",Snackbar.LENGTH_SHORT).show();
+
+
+                }
+                else {
+                    reffLibrary = FirebaseDatabase.getInstance().getReference("Library").child(uid);
+                    LibraryBookInfo lb = new LibraryBookInfo(authorId, title,"",0,0);
+                    reffLibrary.push().setValue(lb);
+                    mReadBtn.setText("Continuous");
+
+                    Snackbar.make(parent, "Successfully added to your book shelf.", Snackbar.LENGTH_SHORT).show();
+
+
+                }
+
+
+            }
+        });
+
+        //todo go to author profile
+        mAuthor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(BookDetailActivity.this, ProfileActivity.class);
+                intent.putExtra("uid", authorId);
+                startActivity(intent);
+            }
+        });
+        mAuthorImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(BookDetailActivity.this, ProfileActivity.class);
+                intent.putExtra("uid", authorId);
+                startActivity(intent);
+            }
+        });
+
+
+    }
+
+    private void getAuthorInfo() {
+        FirebaseDatabase.getInstance().getReference("Profile").child(authorId)
+        .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    String library_AId = snapshot1.child("authorId").getValue().toString();
-                    String library_title = snapshot1.child("title").getValue().toString();
-
-                    if (library_AId.equals(authorId) && library_title.equals(title)) {
-                        mReadBtn.setText("Continuous");
-                    }
-                }
+                mAuthor.setText("By " + snapshot.child("username").getValue().toString());
+                Glide.with(getApplicationContext()).load(snapshot.child("profileImg").getValue()).into(mAuthorImg);
             }
 
             @Override
@@ -109,15 +179,36 @@ public class BookDetailActivity extends AppCompatActivity {
 
             }
         });
+    }
 
-        partId = new ArrayList<>();
-        //getTotalVote();
+    private void getStoryPartCount() {
+        FirebaseDatabase.getInstance().getReference("Part").child(authorId).child(title)
+        .addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //mPart.setText(snapshot.getChildrenCount() + " Parts");
+                partCount=0;
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    partId.add(snapshot1.getKey());
 
-        mSimpleBookTitle = new ArrayList<>();
-        mSimpleBookList = new ArrayList<>();
-        //todo to show story title,img,name
-        reff = FirebaseDatabase.getInstance().getReference("Story");
-        reff.orderByChild("uid").equalTo(authorId).addValueEventListener(new ValueEventListener() {
+                    if(snapshot1.child("privacy").getValue().equals("public")){
+                        partCount+=1;
+                    }
+                }
+                mPart.setText(partCount+" Parts");
+                getTotalVote();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void getStoryInfo() {
+        FirebaseDatabase.getInstance().getReference("Story")
+        .orderByChild("uid").equalTo(authorId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
@@ -136,16 +227,7 @@ public class BookDetailActivity extends AppCompatActivity {
                         } else if (totalView <= 999) {
                             mView.setText(totalView + " Views");
                         }
-                        int totalVote = Integer.parseInt(snapshot1.child("totalVote").getValue().toString());
-                        if (totalVote > 999 && totalVote < 1000000) {
-                            double tVote = totalVote / 1000;
-                            mVote.setText(String.format("%.1f", tVote) + "k Votes");
-                        } else if (totalVote >= 1000000) {
-                            double tVote = totalVote / 1000000;
-                            mVote.setText(String.format("%.1f", tVote) + "M Votes");
-                        } else if (totalVote <= 999) {
-                            mVote.setText(totalVote + " Votes");
-                        }
+
 
                         tag = null;
                         mChipGroup.removeAllViews();
@@ -202,110 +284,51 @@ public class BookDetailActivity extends AppCompatActivity {
 
             }
         });
-
-
-        //todo show no.of part
-        reffPart = FirebaseDatabase.getInstance().getReference("Part").child(authorId).child(title);
-        reffPart.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mPart.setText(snapshot.getChildrenCount() + " Parts");
-                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    partId.add(snapshot1.getKey());
-                }
-                getTotalVote();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        //todo to show author name & profile img
-        reffUser = FirebaseDatabase.getInstance().getReference("Profile").child(authorId);
-        reffUser.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mAuthor.setText("By " + snapshot.child("username").getValue().toString());
-                Glide.with(getApplicationContext()).load(snapshot.child("profileImg").getValue()).into(mAuthorImg);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        mReadBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(BookDetailActivity.this, ReadBookActivity.class);
-                intent.putExtra("authorId", authorId);
-                intent.putExtra("title", title);
-                startActivity(intent);
-            }
-        });
-
-        mAddLibrary.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mReadBtn.getText().equals("Continuous")) {
-                    FirebaseDatabase.getInstance().getReference("Library").child(uid).removeValue();
-                    mReadBtn.setText("Read");
-
-                    Snackbar.make(parent,"Removed from your book shelf.",Snackbar.LENGTH_SHORT).show();
-
-
-                }
-                else {
-                    reffLibrary = FirebaseDatabase.getInstance().getReference("Library").child(uid);
-                    LibraryBookInfo lb = new LibraryBookInfo(authorId, title,"",0,0);
-                    reffLibrary.push().setValue(lb);
-                    mReadBtn.setText("Continuous");
-
-                    Snackbar.make(parent, "Successfully added to your book shelf.", Snackbar.LENGTH_SHORT).show();
-
-
-                }
-
-
-            }
-        });
-
-        mAuthor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(BookDetailActivity.this, ProfileActivity.class);
-                intent.putExtra("uid", authorId);
-                startActivity(intent);
-            }
-        });
-        mAuthorImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(BookDetailActivity.this, ProfileActivity.class);
-                intent.putExtra("uid", authorId);
-                startActivity(intent);
-            }
-        });
-
-
     }
 
+    private void checkLibrary() {
+        FirebaseDatabase.getInstance().getReference("Library").child(uid)
+        .addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                    String library_AId = snapshot1.child("authorId").getValue().toString();
+                    String library_title = snapshot1.child("title").getValue().toString();
+
+                    if (library_AId.equals(authorId) && library_title.equals(title)) {
+                        mReadBtn.setText("Continuous");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 
 
     int count;
 
     private void getTotalVote() {
         count = 0;
-        FirebaseDatabase.getInstance().getReference("Voter").child(uid)
+        FirebaseDatabase.getInstance().getReference("Voter").child(authorId)
                 .child(title).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (String id : partId) {
                     Log.e("gg", "partid=" + id);
-                    count += (int) snapshot.child(id).getChildrenCount();
+                    count += (int) snapshot.child(id).child("vote").getChildrenCount();
+                }
+                if (count > 999 && count < 1000000) {
+                    double tVote = count / 1000;
+                    mVote.setText(String.format("%.1f", tVote) + "k Votes");
+                } else if (count >= 1000000) {
+                    double tVote = count / 1000000;
+                    mVote.setText(String.format("%.1f", tVote) + "M Votes");
+                } else if (count <= 999) {
+                    mVote.setText(count + " Votes");
                 }
 
                 Log.e("gg", "totalVote=" + count);
@@ -335,6 +358,7 @@ public class BookDetailActivity extends AppCompatActivity {
         mAddLibrary = findViewById(R.id.bookDetail_addLibrary);
         parent = findViewById(R.id.bookDetail_layout);
         //mScroll=findViewById(R.id.scrollView2);
+
 
     }
 }

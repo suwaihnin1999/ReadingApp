@@ -1,31 +1,26 @@
 package com.swh1999.readingapp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -107,7 +102,18 @@ public static  int PICK_Back_Request=0;
                     StoryPartInfo partInfo=snapshot1.getValue(StoryPartInfo.class);
                     partList.add(partInfo);
                 }
-                mPartRecyclerview.setAdapter(new PartAdapter(MyStoryDetailActivity.this,partList));
+                mPartRecyclerview.setAdapter(new PartAdapter(MyStoryDetailActivity.this,partList,
+                        new PartAdapter.onItemClickListener(){
+                            @Override
+                            public void onItemClick(StoryPartInfo storyPartInfo) {
+                                Intent intent=new Intent(MyStoryDetailActivity.this,ViewPartActivity.class);
+                                intent.putExtra("storyTitle",title);
+                                intent.putExtra("storyTitleNew",mStoryTitle.getText().toString());
+                                intent.putExtra("uid",uid);
+                                intent.putExtra("partTitle",storyPartInfo.getPartTitle());
+                                startActivity(intent);
+                            }
+                        }));
             }
 
             @Override

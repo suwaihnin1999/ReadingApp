@@ -1,10 +1,6 @@
 package com.swh1999.readingapp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import static com.swh1999.readingapp.R.layout.username_alert_layout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,11 +8,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
@@ -87,17 +91,29 @@ public class EditMyStoryInfoActivity extends AppCompatActivity {
             public void onClick(View view) {
                 AlertDialog.Builder mBuilder=new AlertDialog.Builder(EditMyStoryInfoActivity.this,R.style.AlertDialog_custom);
                 mBuilder.setTitle("Edit Story's Title");
-                EditText tv=new EditText(EditMyStoryInfoActivity.this);
-                tv.setText(mBookTitle.getText().toString());
-                tv.setTextColor(getResources().getColor(R.color.black));
-                mBuilder.setView(tv);
+                View v=getLayoutInflater().inflate(username_alert_layout,null);
+                TextView alertTitle=v.findViewById(R.id.textView_username);
+                EditText mUsername=v.findViewById(R.id.username_editText);
+                alertTitle.setText("New story title");
+                mUsername.setText(mBookTitle.getText().toString());
+
+                FrameLayout container = new FrameLayout(EditMyStoryInfoActivity.this);
+                FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                params.topMargin=getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                params.bottomMargin = getResources().getDimensionPixelSize(R.dimen.dialog_marginBot);
+                v.setLayoutParams(params);
+                container.addView(v);
+
+                mBuilder.setView(container);
 
                 mBuilder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //todo database reff of commom story query
                         reffStory=FirebaseDatabase.getInstance().getReference("Story").child(key);
-                        reffStory.child("storyTitleNew").setValue(tv.getText().toString());
+                        reffStory.child("storyTitleNew").setValue(mUsername.getText().toString());
                     }
                 });
                 mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -135,17 +151,29 @@ public class EditMyStoryInfoActivity extends AppCompatActivity {
             public void onClick(View view) {
                 AlertDialog.Builder mBuilder=new AlertDialog.Builder(EditMyStoryInfoActivity.this,R.style.AlertDialog_custom);
                 mBuilder.setTitle("Edit Story's Des");
-                EditText tv=new EditText(EditMyStoryInfoActivity.this);
-                tv.setText(mBookDes.getText().toString());
-                tv.setTextColor(getResources().getColor(R.color.black));
-                mBuilder.setView(tv);
+                View v=getLayoutInflater().inflate(username_alert_layout,null);
+                TextView alertTitle=v.findViewById(R.id.textView_username);
+                EditText mUsername=v.findViewById(R.id.username_editText);
+                mUsername.setText("");
+                alertTitle.setText("New story des");
+
+                FrameLayout container = new FrameLayout(EditMyStoryInfoActivity.this);
+                FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                params.topMargin=getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                params.bottomMargin = getResources().getDimensionPixelSize(R.dimen.dialog_marginBot);
+                v.setLayoutParams(params);
+                container.addView(v);
+
+                mBuilder.setView(container);
 
                 mBuilder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //todo database reff of commom story query
                         reffStory=FirebaseDatabase.getInstance().getReference("Story").child(key);
-                        reffStory.child("storyDes").setValue(tv.getText().toString());
+                        reffStory.child("storyDes").setValue(mUsername.getText().toString());
                     }
                 });
                 mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -183,17 +211,29 @@ public class EditMyStoryInfoActivity extends AppCompatActivity {
             public void onClick(View view) {
                 AlertDialog.Builder mBuilder=new AlertDialog.Builder(EditMyStoryInfoActivity.this,R.style.AlertDialog_custom);
                 mBuilder.setTitle("Edit Story's Tag");
-                EditText tv=new EditText(EditMyStoryInfoActivity.this);
-                tv.setText(mBookTag.getText().toString());
-                tv.setTextColor(getResources().getColor(R.color.black));
-                mBuilder.setView(tv);
+                View v=getLayoutInflater().inflate(username_alert_layout,null);
+                TextView alertTitle=v.findViewById(R.id.textView_username);
+                EditText mUsername=v.findViewById(R.id.username_editText);
+                alertTitle.setText("New story tag");
+                mUsername.setText(mBookTag.getText().toString());
+
+                FrameLayout container = new FrameLayout(EditMyStoryInfoActivity.this);
+                FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                params.topMargin=getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+                params.bottomMargin = getResources().getDimensionPixelSize(R.dimen.dialog_marginBot);
+                v.setLayoutParams(params);
+                container.addView(v);
+
+                mBuilder.setView(container);
 
                 mBuilder.setPositiveButton("Change", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //todo database reff of commom story query
                         reffStory=FirebaseDatabase.getInstance().getReference("Story").child(key);
-                        reffStory.child("tag").setValue(tv.getText().toString());
+                        reffStory.child("tag").setValue(mUsername.getText().toString());
                     }
                 });
                 mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

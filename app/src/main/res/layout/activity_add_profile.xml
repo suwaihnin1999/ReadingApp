@@ -143,7 +143,8 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="@+id/addProfile_bgCard"
             app:layout_constraintStart_toStartOf="@+id/addProfile_bgCard"
-            app:layout_constraintTop_toBottomOf="@+id/addProfile_bgCard" />
+            app:layout_constraintTop_toBottomOf="@+id/addProfile_bgCard"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <TextView
             android:id="@+id/textView7"
@@ -167,7 +168,8 @@
 
             app:layout_constraintEnd_toEndOf="@+id/addProfile_username"
             app:layout_constraintStart_toStartOf="@+id/addProfile_username"
-            app:layout_constraintTop_toBottomOf="@+id/textView7" />
+            app:layout_constraintTop_toBottomOf="@+id/textView7"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <TextView
             android:id="@+id/textView6"

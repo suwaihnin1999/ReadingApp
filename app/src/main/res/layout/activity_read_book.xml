@@ -50,7 +50,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <LinearLayout
-                    android:id="@+id/linearLayout"
+                    android:id="@+id/linearLayout_readBook"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
@@ -121,7 +121,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/readBook_partTitle"
                     app:layout_constraintStart_toStartOf="@+id/readBook_partTitle"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout_readBook" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

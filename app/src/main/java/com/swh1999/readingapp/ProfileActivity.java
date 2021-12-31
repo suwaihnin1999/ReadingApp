@@ -233,7 +233,7 @@ public class ProfileActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         if(intentUid.equals(uid)){
             MenuInflater inflater=getMenuInflater();
-            inflater.inflate(R.menu.mybookdetail_menu,menu);
+            inflater.inflate(R.menu.myacc_menu,menu);
             return true;
         }
        return true;

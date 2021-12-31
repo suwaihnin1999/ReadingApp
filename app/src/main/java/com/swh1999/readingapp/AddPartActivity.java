@@ -4,11 +4,15 @@ import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,6 +36,9 @@ DatabaseReference reff,reffPartVote;
 FirebaseAuth fAuth;
 String uid;
 ProgressBar mProgressbar;
+RadioButton mPublicCheck,mPrivateCheck;
+String privacy;
+TextView mWordCount;
 int maxid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +52,7 @@ int maxid;
 
         storyTitle=getIntent().getStringExtra("storyTitle");
         storyDes=getIntent().getStringExtra("storyDes");
+        privacy="";
 
         mToolbar.setTitle("Add Part");
         setSupportActionBar(mToolbar);
@@ -115,10 +123,19 @@ int maxid;
                 else if(des.equals("")){
                     mPartDes.setError("Part des required");
                 }
+                else if(mPrivateCheck.isChecked()==false && mPublicCheck.isChecked()==false){
+                    Toast.makeText(AddPartActivity.this, "Select your story's part privacy.", Toast.LENGTH_SHORT).show();
+                }
                 else{
                     mProgressbar.setVisibility(View.VISIBLE);
                     Log.e("gg","max id for firebase="+maxid);
-                    StoryPartInfo partInfo=new StoryPartInfo(title,des,0);
+                    if(mPrivateCheck.isChecked()){
+                        privacy="private";
+                    }
+                    else{
+                        privacy="public";
+                    }
+                    StoryPartInfo partInfo=new StoryPartInfo(title,des,0,privacy);
                     reff.child(String.valueOf(maxid)).setValue(partInfo);
 
                     Toast.makeText(AddPartActivity.this, "Successfully uploaded "+title, Toast.LENGTH_SHORT).show();
@@ -127,6 +144,30 @@ int maxid;
 
 
                 }
+            }
+        });
+
+        mPartDes.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                int l=mPartDes.getText().toString().length();
+                if(l>20000){
+                    mWordCount.setTextColor(getResources().getColor(R.color.red));
+                }
+                else{
+                    mWordCount.setTextColor(getResources().getColor(R.color.orange));
+                    mWordCount.setText(String.valueOf(l));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
     }
@@ -138,5 +179,8 @@ int maxid;
         mPartDes=findViewById(R.id.addPart_des);
         mUpload=findViewById(R.id.addPart_upload);
         mProgressbar=findViewById(R.id.addPart_progressBar);
+        mPublicCheck=findViewById(R.id.publicCheck);
+        mPrivateCheck=findViewById(R.id.privateCheck);
+        mWordCount=findViewById(R.id.addPart_wordCount);
     }
 }

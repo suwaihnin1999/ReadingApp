@@ -13,54 +13,104 @@
     tools:context=".AddPartActivity">
 
 
-        <Button
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/privateCheck"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/addPart_upload"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="32dp"
-            android:backgroundTint="@color/orange"
+            android:textSize="13sp"
             android:fontFamily="@font/playfairdisplay_bold"
-            android:text="Upload"
-            android:textAllCaps="false"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addPart_des"
-            app:layout_constraintVertical_bias="1.0" />
-
-        <EditText
-            android:id="@+id/addPart_des"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/playfairdisplay_regular"
-            android:hint="Tap here to start"
-            android:paddingStart="10dp"
             android:textColor="@color/black"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="@+id/addPart_title"
-            app:layout_constraintStart_toStartOf="@+id/addPart_title"
-            app:layout_constraintTop_toBottomOf="@+id/addPart_title" />
-
-        <EditText
-            android:id="@+id/addPart_title"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:fontFamily="@font/playfairdisplay_black"
-            android:hint="Part Title"
-            android:textAlignment="center"
+            android:text="Private" />
+
+        <RadioButton
+            android:id="@+id/publicCheck"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="10dp"
+            android:textSize="13sp"
+            android:fontFamily="@font/playfairdisplay_bold"
             android:textColor="@color/black"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="wrap_content"
+            android:text="Public" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/addPart_upload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/orange"
+        android:fontFamily="@font/playfairdisplay_bold"
+        android:text="Upload"
+        android:textAllCaps="false"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addPart_des"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <EditText
+        android:id="@+id/addPart_des"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="100dp"
+        android:maxLength="20001"
+        android:fontFamily="@font/playfairdisplay_regular"
+        android:gravity="left"
+        android:hint="Tap here to start"
+        android:paddingStart="10dp"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/addPart_title"
+        app:layout_constraintStart_toStartOf="@+id/addPart_title"
+        app:layout_constraintTop_toBottomOf="@+id/addPart_title"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/addPart_wordCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:fontFamily="@font/playfairdisplay_bold"
+        android:text="00000"
+        android:textColor="@color/orange"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/addPart_des"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/addPart_des"
+        app:layout_constraintTop_toBottomOf="@+id/addPart_des"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/addPart_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/playfairdisplay_black"
+        android:hint="Part Title"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
     <ProgressBar
         android:layout_width="wrap_content"

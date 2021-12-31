@@ -9,6 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".EditPartInfoActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".ViewPartActivity"
+            android:exported="false" />
         <activity
             android:name=".FollowActivity"
             android:exported="false" />

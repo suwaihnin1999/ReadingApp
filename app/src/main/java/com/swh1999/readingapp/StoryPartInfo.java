@@ -4,11 +4,13 @@ public class StoryPartInfo {
     private String partTitle;
     private String partDes;
     private int partView;
+    private String privacy;
 
-    public StoryPartInfo(String partTitle, String partDes,int partView) {
+    public StoryPartInfo(String partTitle, String partDes,int partView,String privacy) {
         this.partTitle = partTitle;
         this.partDes = partDes;
         this.partView=partView;
+        this.privacy=privacy;
 
     }
 
@@ -39,5 +41,11 @@ public class StoryPartInfo {
         this.partView = partView;
     }
 
+    public String getPrivacy() {
+        return privacy;
+    }
 
+    public void setPrivacy(String privacy) {
+        this.privacy = privacy;
+    }
 }
